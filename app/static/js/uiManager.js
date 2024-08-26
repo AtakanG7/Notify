@@ -4,6 +4,7 @@ class UIManager {
         this.container = document.getElementById('noteContainer');
         this.colorPicker = document.getElementById('colorPicker');
         this.fontSelector = document.getElementById('fontSelector');
+        this.priority = document.getElementById('priorityLevel');
         this.zoomLevel = 1;
     }
 
@@ -16,10 +17,17 @@ class UIManager {
         noteEl.style.zIndex = note.zIndex || 1;
         noteEl.dataset.id = note.id;
 
+        const priority = note.priority || 'Low';
+        const createdAt = new Date(note.createdAt).toLocaleString();
+
         noteEl.innerHTML = `
             <div class="note-header">
                 <div class="drag-handle"><i class="fas fa-arrows-alt"></i></div>
                 <button class="delete-note"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="note-meta">
+                <span class="note-priority" style="color: ${this.getPriorityColor(priority)}; font-weight: bold;">${priority}</span>
+                <span class="note-created-at" style="font-size: 0.8em; color: #666;">${createdAt}</span>
             </div>
             ${note.type === 'image' 
                 ? `<img src="${note.content}" class="image-note" alt="User uploaded image">`
@@ -28,6 +36,18 @@ class UIManager {
 
         this.setupNoteEvents(noteEl);
         return noteEl;
+    }
+
+    getPriorityColor(priority) {
+        if (priority === 1) {
+            return 'red';
+        } else if (priority === 2) {
+            return 'orange';
+        } else if (priority === 3) {
+            return 'green';
+        } else {
+            return 'black';
+        }
     }
 
     setupNoteEvents(noteEl) {
@@ -76,15 +96,23 @@ class UIManager {
     addNote(type = 'text') {
         const note = {
             id: 'note_' + Date.now(),
-            content: type === 'text' ? 'New Note' : '',
+            content: type === 'text' ? 'What is in your mind?' : '',
             x: Math.random() * (window.innerWidth - 200),
             y: Math.random() * (window.innerHeight - 100),
             color: this.colorPicker.value,
             font: this.fontSelector.value,
             type: type,
+            priority: this.priority.value | '1',
+            createdAt: new Date().toISOString(),
             zIndex: this.noteManager.notes.length + 1
         };
 
+        this.noteManager.addNote(note);
+        const noteEl = this.createNoteElement(note);
+        this.container.appendChild(noteEl);
+    }
+
+    addNote1(note) {
         this.noteManager.addNote(note);
         const noteEl = this.createNoteElement(note);
         this.container.appendChild(noteEl);

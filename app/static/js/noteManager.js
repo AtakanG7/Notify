@@ -43,20 +43,33 @@ class NoteManager {
     exportToPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        let y = 10;
         
-        this.notes.forEach((note, index) => {
-            if (index > 0) doc.addPage();
+        this.notes.forEach(note => {
             doc.setFontSize(16);
-            doc.text(note.content, 10, 10);
+            doc.text(note.content, 10, y);
+            y += 20;
         });
 
         doc.save('notes.pdf');
     }
 
     shareBoard() {
-        const shareUrl = `${window.location.origin}${window.location.pathname}?userId=${this.userId}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Share link copied to clipboard!');
+        fetch('/share-board', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: this.userId,
+                notes: this.notes
+            })
+        }).then(response => response.json())
+        .then(data => {
+            const shareUrl = `${window.location.origin}/shared/${data.id}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Share link copied to clipboard!', shareUrl);
+            });
         });
     }
 }

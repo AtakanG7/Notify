@@ -1,10 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     const noteManager = new NoteManager();
     const uiManager = new UIManager(noteManager);
-
+    
     noteManager.loadFromLocalStorage();
-    uiManager.renderNotes();
+    if(window.location.href.indexOf('shared')===-1){
+        uiManager.renderNotes();
+    }
 
+    if(window.location.href.indexOf('shared')!==-1){
+        // add the notes to the board
+        for (let i = 0; i < notes.length; i++) {
+            uiManager.addNote1(notes[i]);
+        }
+    }
     document.getElementById('addNote').addEventListener('click', () => uiManager.addNote());
     document.getElementById('addImage').addEventListener('click', () => uiManager.addImage());
     document.getElementById('exportPDF').addEventListener('click', () => noteManager.exportToPDF());
@@ -43,3 +51,15 @@ document.addEventListener('DOMContentLoaded', function() {
         uiManager.renderNotes();
     }
 });
+
+
+const complementaryColors = [
+    '#ff3e3e', '#3eff3e', '#3e3eff',
+    '#ff3eff', '#ffff3e', '#3effff'
+];
+
+document.getElementById('colorPicker').addEventListener('input', function(e) {
+    const selectedColor = e.target.value;
+    e.target.value = closestColor;
+});
+
