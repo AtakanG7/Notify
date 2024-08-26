@@ -2,7 +2,7 @@
 
 NoteCanvas is a web-based note-taking application with a flexible, Excalidraw-like interface for organizing ideas. Users can create, move, and customize notes on a freeform canvas.
 ![image](https://github.com/user-attachments/assets/59dba0a8-07bf-4b95-b4fe-7927d0dd1965)
-
+[live](https://noteapp001.onrender.com/)
 ## Features
 
 - Interactive toolbar for adding and managing notes
